@@ -1,5 +1,5 @@
 //===----------------------------------------------------------------------===//
-//                         Scrooge
+//                         Yahoo Finance
 //
 // functions/functions.hpp
 //
@@ -11,17 +11,17 @@
 #include "duckdb/function/aggregate_function.hpp"
 
 namespace duckdb {
-namespace scrooge {
+namespace yahoo_finance {
 
-struct FirstScrooge {
+struct First {
   static void RegisterFunction(Connection &conn, Catalog &catalog);
 };
 
-struct LastScrooge {
+struct Last {
   static void RegisterFunction(Connection &conn, Catalog &catalog);
 };
 
-struct TimeBucketScrooge {
+struct TimeBucket {
   static void RegisterFunction(Connection &conn, Catalog &catalog);
 };
 
@@ -29,5 +29,5 @@ struct Aliases {
   static void Register(Connection &conn, Catalog &catalog);
 };
 
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb

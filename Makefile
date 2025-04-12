@@ -2,7 +2,7 @@ PROJ_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 
 # Configuration of extension
-EXT_NAME=scrooge
+EXT_NAME=yahoo_finance
 EXT_CONFIG=${PROJ_DIR}extension_config.cmake
 
 # We need this for testing

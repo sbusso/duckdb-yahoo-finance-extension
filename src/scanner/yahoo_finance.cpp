@@ -8,7 +8,7 @@
 #include "duckdb/common/helper.hpp"
 
 namespace duckdb {
-namespace scrooge {
+namespace yahoo_finance {
 
 int64_t IntervalInEpoch(string &interval) {
   // ble string checkaroo
@@ -176,5 +176,5 @@ void YahooScanner::Scan(ClientContext &context, TableFunctionInput &data_p,
   output.Move(*result_chunk);
   data.plan = GeneratePlan(data);
 }
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb

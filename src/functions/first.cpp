@@ -4,15 +4,15 @@
 #include "duckdb/common/helper.hpp"
 
 namespace duckdb {
-namespace scrooge {
+namespace yahoo_finance {
 
-template <class T> struct FirstScroogeState {
+template <class T> struct FirstState {
   T first;
   int64_t earliest_time;
   bool executed;
 };
 
-struct FirstScroogeOperation {
+struct FirstOperation {
   template <class STATE> static void Initialize(STATE &state) {
     state.earliest_time = NumericLimits<int64_t>::Maximum();
     state.executed = false;
@@ -60,125 +60,125 @@ BindDoubleFirst(ClientContext &context, AggregateFunction &function,
   auto &decimal_type = arguments[0]->return_type;
   switch (decimal_type.InternalType()) {
   case PhysicalType::INT16: {
-    function = AggregateFunction::BinaryAggregate<FirstScroogeState<int16_t>,
+    function = AggregateFunction::BinaryAggregate<FirstState<int16_t>,
                                                   int16_t, int64_t, int16_t,
-                                                  FirstScroogeOperation>(
+                                                  FirstOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
     break;
   }
   case PhysicalType::INT32: {
-    function = AggregateFunction::BinaryAggregate<FirstScroogeState<int32_t>,
+    function = AggregateFunction::BinaryAggregate<FirstState<int32_t>,
                                                   int32_t, int64_t, int32_t,
-                                                  FirstScroogeOperation>(
+                                                  FirstOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
     break;
   }
   case PhysicalType::INT64: {
-    function = AggregateFunction::BinaryAggregate<FirstScroogeState<int64_t>,
+    function = AggregateFunction::BinaryAggregate<FirstState<int64_t>,
                                                   int64_t, int64_t, int64_t,
-                                                  FirstScroogeOperation>(
+                                                  FirstOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
     break;
   }
   default:
-    function = AggregateFunction::BinaryAggregate<FirstScroogeState<Hugeint>,
+    function = AggregateFunction::BinaryAggregate<FirstState<Hugeint>,
                                                   Hugeint, int64_t, Hugeint,
-                                                  FirstScroogeOperation>(
+                                                  FirstOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
   }
   function.name = "first_s";
   return nullptr;
 }
 
-AggregateFunction GetFirstScroogeFunction(const LogicalType &timestamp_type,
+AggregateFunction GetFirstFunction(const LogicalType &timestamp_type,
                                           const LogicalType &type) {
   switch (type.id()) {
   case LogicalTypeId::SMALLINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<int16_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<int16_t>,
                                               int16_t, int64_t, int16_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::TINYINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<int8_t>, int8_t,
+    return AggregateFunction::BinaryAggregate<FirstState<int8_t>, int8_t,
                                               int64_t, int8_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::INTEGER:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<int32_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<int32_t>,
                                               int32_t, int64_t, int32_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::BIGINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<int64_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<int64_t>,
                                               int64_t, int64_t, int64_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::DECIMAL: {
     auto decimal_aggregate =
-        AggregateFunction::BinaryAggregate<FirstScroogeState<hugeint_t>,
+        AggregateFunction::BinaryAggregate<FirstState<hugeint_t>,
                                            hugeint_t, int64_t, hugeint_t,
-                                           FirstScroogeOperation>(
+                                           FirstOperation>(
             type, timestamp_type, type);
     decimal_aggregate.bind = BindDoubleFirst;
     return decimal_aggregate;
   }
   case LogicalTypeId::FLOAT:
     return AggregateFunction::BinaryAggregate<
-        FirstScroogeState<float>, float, int64_t, float, FirstScroogeOperation>(
+        FirstState<float>, float, int64_t, float, FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::DOUBLE:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<double>, double,
+    return AggregateFunction::BinaryAggregate<FirstState<double>, double,
                                               int64_t, double,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UTINYINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<uint8_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<uint8_t>,
                                               uint8_t, int64_t, uint8_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::USMALLINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<uint16_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<uint16_t>,
                                               uint16_t, int64_t, uint16_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UINTEGER:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<uint32_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<uint32_t>,
                                               uint32_t, int64_t, uint32_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UBIGINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<uint64_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<uint64_t>,
                                               uint64_t, int64_t, uint64_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::HUGEINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<hugeint_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<hugeint_t>,
                                               hugeint_t, int64_t, hugeint_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UHUGEINT:
-    return AggregateFunction::BinaryAggregate<FirstScroogeState<uhugeint_t>,
+    return AggregateFunction::BinaryAggregate<FirstState<uhugeint_t>,
                                               uhugeint_t, int64_t, uhugeint_t,
-                                              FirstScroogeOperation>(
+                                              FirstOperation>(
         type, timestamp_type, type);
   default:
     throw InternalException(
-        "Scrooge First Function only accept Numeric Inputs");
+        "Yahoo Finance First Function only accepts Numeric Inputs");
   }
 }
 
-void FirstScrooge::RegisterFunction(Connection &conn, Catalog &catalog) {
+void First::RegisterFunction(Connection &conn, Catalog &catalog) {
   // The first aggregate allows you to get the first value of one column as
   // ordered by another e.g., first(temperature, time) returns the earliest
   // temperature value based on time within an aggregate group.
   AggregateFunctionSet first("first_s");
   for (auto &type : LogicalType::Numeric()) {
-    first.AddFunction(GetFirstScroogeFunction(LogicalType::TIMESTAMP_TZ, type));
-    first.AddFunction(GetFirstScroogeFunction(LogicalType::TIMESTAMP, type));
+    first.AddFunction(GetFirstFunction(LogicalType::TIMESTAMP_TZ, type));
+    first.AddFunction(GetFirstFunction(LogicalType::TIMESTAMP, type));
   }
   CreateAggregateFunctionInfo first_info(first);
   catalog.CreateFunction(*conn.context, first_info);
 }
 
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb

@@ -4,15 +4,15 @@
 #include "duckdb/common/helper.hpp"
 
 namespace duckdb {
-namespace scrooge {
+namespace yahoo_finance {
 
-template <class T> struct LastScroogeState {
+template <class T> struct LastState {
   T last;
   int64_t last_time;
   bool executed;
 };
 
-struct LastScroogeOperation {
+struct LastOperation {
   template <class STATE> static void Initialize(STATE &state) {
     state.last_time = NumericLimits<int64_t>::Minimum();
     state.executed = false;
@@ -63,64 +63,64 @@ BindDoupleLastFunctionDecimal(ClientContext &context,
   auto &decimal_type = arguments[0]->return_type;
   switch (decimal_type.InternalType()) {
   case PhysicalType::INT16: {
-    function = AggregateFunction::BinaryAggregate<LastScroogeState<int16_t>,
+    function = AggregateFunction::BinaryAggregate<LastState<int16_t>,
                                                   int16_t, int64_t, int16_t,
-                                                  LastScroogeOperation>(
+                                                  LastOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
     break;
   }
   case PhysicalType::INT32: {
-    function = AggregateFunction::BinaryAggregate<LastScroogeState<int32_t>,
+    function = AggregateFunction::BinaryAggregate<LastState<int32_t>,
                                                   int32_t, int64_t, int32_t,
-                                                  LastScroogeOperation>(
+                                                  LastOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
     break;
   }
   case PhysicalType::INT64: {
-    function = AggregateFunction::BinaryAggregate<LastScroogeState<int64_t>,
+    function = AggregateFunction::BinaryAggregate<LastState<int64_t>,
                                                   int64_t, int64_t, int64_t,
-                                                  LastScroogeOperation>(
+                                                  LastOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
     break;
   }
   default:
-    function = AggregateFunction::BinaryAggregate<LastScroogeState<Hugeint>,
+    function = AggregateFunction::BinaryAggregate<LastState<Hugeint>,
                                                   Hugeint, int64_t, Hugeint,
-                                                  LastScroogeOperation>(
+                                                  LastOperation>(
         decimal_type, LogicalType::TIMESTAMP_TZ, decimal_type);
   }
   function.name = "last_s";
   return nullptr;
 }
 
-AggregateFunction GetLastScroogeFunction(const LogicalType &timestamp_type,
+AggregateFunction GetLastFunction(const LogicalType &timestamp_type,
                                          const LogicalType &type) {
   switch (type.id()) {
   case LogicalTypeId::SMALLINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<int16_t>,
+    return AggregateFunction::BinaryAggregate<LastState<int16_t>,
                                               int16_t, int64_t, int16_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::TINYINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<int8_t>, int8_t,
+    return AggregateFunction::BinaryAggregate<LastState<int8_t>, int8_t,
                                               int64_t, int8_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::INTEGER:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<int32_t>,
+    return AggregateFunction::BinaryAggregate<LastState<int32_t>,
                                               int32_t, int64_t, int32_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::BIGINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<int64_t>,
+    return AggregateFunction::BinaryAggregate<LastState<int64_t>,
                                               int64_t, int64_t, int64_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::DECIMAL: {
     auto decimal_aggregate =
-        AggregateFunction::BinaryAggregate<LastScroogeState<hugeint_t>,
+        AggregateFunction::BinaryAggregate<LastState<hugeint_t>,
                                            hugeint_t, int64_t, hugeint_t,
-                                           LastScroogeOperation>(
+                                           LastOperation>(
             type, timestamp_type, type);
     decimal_aggregate.bind = BindDoupleLastFunctionDecimal;
     return decimal_aggregate;
@@ -130,62 +130,62 @@ AggregateFunction GetLastScroogeFunction(const LogicalType &timestamp_type,
     //	    LogicalType::DOUBLE, LogicalType::DOUBLE, LogicalType::DOUBLE));
   case LogicalTypeId::FLOAT:
     return AggregateFunction::BinaryAggregate<
-        LastScroogeState<float>, float, int64_t, float, LastScroogeOperation>(
+        LastState<float>, float, int64_t, float, LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::DOUBLE:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<double>, double,
+    return AggregateFunction::BinaryAggregate<LastState<double>, double,
                                               int64_t, double,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UTINYINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<uint8_t>,
+    return AggregateFunction::BinaryAggregate<LastState<uint8_t>,
                                               uint8_t, int64_t, uint8_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::USMALLINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<uint16_t>,
+    return AggregateFunction::BinaryAggregate<LastState<uint16_t>,
                                               uint16_t, int64_t, uint16_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UINTEGER:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<uint32_t>,
+    return AggregateFunction::BinaryAggregate<LastState<uint32_t>,
                                               uint32_t, int64_t, uint32_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UBIGINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<uint64_t>,
+    return AggregateFunction::BinaryAggregate<LastState<uint64_t>,
                                               uint64_t, int64_t, uint64_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::HUGEINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<hugeint_t>,
+    return AggregateFunction::BinaryAggregate<LastState<hugeint_t>,
                                               hugeint_t, int64_t, hugeint_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   case LogicalTypeId::UHUGEINT:
-    return AggregateFunction::BinaryAggregate<LastScroogeState<hugeint_t>,
+    return AggregateFunction::BinaryAggregate<LastState<hugeint_t>,
                                               hugeint_t, int64_t, hugeint_t,
-                                              LastScroogeOperation>(
+                                              LastOperation>(
         type, timestamp_type, type);
   default:
     throw InternalException(
-        "Scrooge First Function only accept Numeric Inputs");
+        "Yahoo Finance Last Function only accepts Numeric Inputs");
   }
 }
 
-void LastScrooge::RegisterFunction(Connection &conn, Catalog &catalog) {
+void Last::RegisterFunction(Connection &conn, Catalog &catalog) {
   // The last aggregate allows you to get the value of one column as ordered by
   // another. For example, last(temperature, time) returns the latest
   // temperature value based on time within an aggregate group.
 
   AggregateFunctionSet last("last_s");
   for (auto &type : LogicalType::Numeric()) {
-    last.AddFunction(GetLastScroogeFunction(LogicalType::TIMESTAMP_TZ, type));
-    last.AddFunction(GetLastScroogeFunction(LogicalType::TIMESTAMP, type));
+    last.AddFunction(GetLastFunction(LogicalType::TIMESTAMP_TZ, type));
+    last.AddFunction(GetLastFunction(LogicalType::TIMESTAMP, type));
   }
   CreateAggregateFunctionInfo last_info(last);
   catalog.CreateFunction(*conn.context, last_info);
 }
 
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb

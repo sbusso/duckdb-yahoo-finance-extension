@@ -11,7 +11,7 @@
 #include "duckdb/common/helper.hpp"
 
 namespace duckdb {
-namespace scrooge {
+namespace yahoo_finance {
 
 struct Asset {
   string symbol;
@@ -207,5 +207,5 @@ void PortfolioFrontier::Scan(ClientContext &context, TableFunctionInput &data_p,
   }
   output.SetCardinality(cur_out);
 }
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(TARGET_NAME scrooge)
+set(TARGET_NAME yahoo_finance)
+
+add_extension_definitions()
 
 # DuckDB's extension distribution supports vcpkg. As such, dependencies can be
 # added in ./vcpkg.json and then used in cmake with find_package. Feel free to
@@ -12,18 +14,20 @@ set(EXTENSION_NAME ${TARGET_NAME}_extension)
 set(LOADABLE_EXTENSION_NAME ${TARGET_NAME}_loadable_extension)
 
 project(${TARGET_NAME})
-include_directories(src/include)
-include_directories(third_party)
-include_directories(duckdb/third_party/httplib)
-include_directories(${OPENSSL_INCLUDE_DIR})
+# Add includes
+# include_directories(${PROJECT_BINARY_DIR}/codegen/include)
+include_directories(src/include
+  third_party
+  duckdb/third_party/httplib
+  ${OPENSSL_INCLUDE_DIR})
+
 
 set(EXTENSION_SOURCES
-    src/scrooge_extension.cpp
+    src/yahoo_finance_extension.cpp
     src/functions/first.cpp
     src/functions/last.cpp
     src/functions/timebucket.cpp
     src/scanner/yahoo_finance.cpp
-    src/scanner/ethereum_blockchain.cpp
     src/functions/aliases.cpp
     src/functions/portfolio_frontier.cpp)
 

@@ -4,7 +4,7 @@
 #include "duckdb/common/helper.hpp"
 
 namespace duckdb {
-namespace scrooge {
+namespace yahoo_finance {
 
 void TimeBucketFunction(DataChunk &args, ExpressionState &state,
                         Vector &result) {
@@ -74,7 +74,7 @@ void TimeBucketFunction(DataChunk &args, ExpressionState &state,
   }
 }
 
-void TimeBucketScrooge::RegisterFunction(Connection &conn, Catalog &catalog) {
+void TimeBucket::RegisterFunction(Connection &conn, Catalog &catalog) {
   // The time_bucket function is similar to the standard PostgreSQL date_trunc
   // function. Unlike date_trunc, it allows for arbitrary time intervals
   // instead of second, minute, and hour intervals. The return value is the
@@ -90,5 +90,5 @@ void TimeBucketScrooge::RegisterFunction(Connection &conn, Catalog &catalog) {
   CreateScalarFunctionInfo timebucket_info(timebucket);
   catalog.CreateFunction(*conn.context, timebucket_info);
 }
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb

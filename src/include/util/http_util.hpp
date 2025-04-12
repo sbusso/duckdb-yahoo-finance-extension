@@ -11,7 +11,7 @@
 #include <string>
 
 namespace duckdb {
-namespace scrooge {
+namespace yahoo_finance {
 
 class HTTPUtil {
 public:
@@ -71,5 +71,5 @@ public:
   }
 };
 
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb

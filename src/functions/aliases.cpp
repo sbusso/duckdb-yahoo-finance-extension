@@ -4,7 +4,7 @@
 
 namespace duckdb {
 
-namespace scrooge {
+namespace yahoo_finance {
 void Aliases::Register(Connection &conn, Catalog &catalog) {
   // Register Volatility
   auto &stddev =
@@ -28,5 +28,5 @@ void Aliases::Register(Connection &conn, Catalog &catalog) {
   CreateAggregateFunctionInfo sma_info(sma);
   catalog.CreateFunction(*conn.context, sma_info);
 }
-} // namespace scrooge
+} // namespace yahoo_finance
 } // namespace duckdb
